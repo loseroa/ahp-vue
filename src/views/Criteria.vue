@@ -13,9 +13,16 @@
             type="number"
             class="mr-2"
             required
+            min="2"
             v-model="numberOfCriteria"></b-input>
-            <b-button variant="primary" @click="createCriteariaForm()">Add</b-button>
+            <b-button variant="primary" @click="createCriteariaForm()" :disabled="numberOfCriteria < 2">Add</b-button>
         </b-form>
+        </b-col>
+      </b-row>
+      <b-row class="mb-2">
+        <b-col cols="3">
+          <label>Select method</label>
+          <b-form-select v-model="method" :options="options"></b-form-select>
         </b-col>
       </b-row>
       <div v-for="(criteria, index) in criterias" :key="index">
@@ -25,17 +32,15 @@
               <label>Criteria {{index + 1}}:</label>
               <b-input
               v-model="criteria.name"
-              placeholder="Enter name"></b-input>  
+              placeholder="Enter name"
+              required></b-input>  
             </b-form-group>
           </b-col>
         </b-row>
       </div>
-      <!-- <router-link :to="{ name: 'Alternative'}"> -->
-        <!-- <b-button variant="primary" @click="handleClick()" :disabled="criterias.length >= 2"> -->
-        <b-button variant="primary" @click="handleClick()">
-          Next
-        </b-button>
-      <!-- </router-link> -->
+      <b-button variant="primary" @click="handleClick()">
+        Next
+      </b-button>
     </b-container>
   </div>
 </template>
@@ -46,22 +51,31 @@ export default {
   data: () => {
     return {
       numberOfCriteria: null,
-      criterias: []
+      criterias: [],
+      options: [
+          { value: 1, text: 'method 01' },
+          { value: 2, text: 'method 02' },
+          { value: 3, text: 'Dempster Shafer' },
+        ],
+      method: null
     }
   },
   mounted () {
     Object.assign(this.criterias, this.getCriteria)
+    this.method = this.getMethod
     this.numberOfCriteria = this.criterias.length
   },
   computed: {
     ...mapGetters({
-      getCriteria: 'getCriteria'
+      getCriteria: 'getCriteria',
+      getMethod: 'getMethod'
     })
   },
   methods: {
     ...mapActions({
       setCriteria: 'setCriteria',
-      resetState: 'resetState'
+      resetState: 'resetState',
+      setMethod: 'setMethod'
     }),
     createCriteariaForm() {
       this.resetState()
@@ -70,7 +84,8 @@ export default {
         this.criterias.push({name: ""})
       }
     },
-    handleClick () {
+    handleClick () {      
+      this.setMethod(this.method)
       this.setCriteria(this.criterias)
       this.$router.push({name: 'Alternative'})
     }

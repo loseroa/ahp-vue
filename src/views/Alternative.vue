@@ -54,7 +54,7 @@ export default {
   },
   mounted () {
     Object.assign(this.alternatives, this.getAlternative)
-    this.numberOfAlternative  = this.alternatives.length
+    this.numberOfAlternative  = this.getAlternative.length
   },
   computed: {
     ...mapGetters({
@@ -71,13 +71,15 @@ export default {
         this.alternatives.push({name: ""})
       }
     },
-    async btnNextHandleClick () {
-      await new Promise((resolve) => {
-        this.setAlternative(this.alternatives)
-        resolve()        
-      }).then(() => {
-        this.$router.push({name: 'CriteriaMatrix'})
-      })
+    btnNextHandleClick () {
+      // await new Promise((resolve) => {
+      //   this.setAlternative(this.alternatives)
+      //   resolve()        
+      // }).then(() => {
+      //   this.$router.push({name: 'CriteriaMatrix'})
+      // })
+      this.setAlternative(this.alternatives)
+      this.$router.push({name: 'CriteriaMatrix'})
     }
   }
 }
